@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compartidor de Cámara en Tiempo Real</title>
+</head>
+<body>
+
+<video id="video" width="640" height="480" autoplay></video>
+<button id="startButton">Iniciar Cámara</button>
+<button id="stopButton">Detener Cámara</button>
+
+<script>
+    // Obtener elementos del DOM
+    const video = document.getElementById('video');
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
+
+    // Manejador para el clic en el botón de inicio
+    startButton.addEventListener('click', startCamera);
+
+    // Manejador para el clic en el botón de detener
+    stopButton.addEventListener('click', stopCamera);
+
+    // Función para iniciar la cámara
+    async function startCamera() {
+        try {
+            // Obtener acceso a la cámara
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+            // Mostrar el video en el elemento de video
+            video.srcObject = stream;
+
+            // Hacer visible el elemento de video
+            video.style.display = 'block';
+
+            // Deshabilitar el botón de inicio y habilitar el botón de detener
+            startButton.disabled = true;
+            stopButton.disabled = false;
+        } catch (error) {
+            console.error('Error al acceder a la cámara:', error);
+        }
+    }
+
+    // Función para detener la cámara
+    function stopCamera() {
+        // Obtener la corriente de la cámara actual
+        const stream = video.srcObject;
+
+        // Detener todos los tracks de la corriente
+        stream.getTracks().forEach(track => track.stop());
+
+        // Detener la reproducción del video
+        video.srcObject = null;
+
+        // Ocultar el elemento de video
+        video.style.display = 'none';
+
+        // Habilitar el botón de inicio y deshabilitar el botón de detener
+        startButton.disabled = false;
+        stopButton.disabled = true;
+    }
+</script>
+
+</body>
+</html>
